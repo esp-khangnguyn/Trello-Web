@@ -1,17 +1,133 @@
-import { Box } from '@mui/material'
+import { Box, Button, Tooltip } from '@mui/material'
+import Chip from '@mui/material/Chip'
+import DashboardIcon from '@mui/icons-material/Dashboard'
+import Avatar from '@mui/material/Avatar'
+import AvatarGroup from '@mui/material/AvatarGroup'
+
+import {
+  AddToDrive,
+  Bolt,
+  Filter,
+  FilterList,
+  PersonAdd,
+  VpnLock
+} from '@mui/icons-material'
+
+const MENU_STYLES = {
+  color: 'white',
+  bgcolor: 'transparent',
+  border: 'none',
+  paddingX: '5px',
+  borderRadius: '4px',
+  '& .MuiSvgIcon-root': {
+    color: 'white'
+  },
+  '&:hover': {
+    bgcolor: 'primary.50'
+  }
+}
 
 function BoardBar() {
   return (
     <Box
+      px={2}
       sx={{
-        backgroundColor: 'primary.dark',
         width: '100%',
         height: (theme) => theme.trello.boardBarHeight,
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 2,
+        paddingX: 2,
+        overflowX: 'auto',
+        bgcolor: (theme) =>
+          theme.palette.mode == 'dark' ? '#34495e' : '#1976d2',
+        borderBottom: '1px solid #00bfa5'
       }}
     >
-      Board bar
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2
+        }}
+      >
+        <Chip
+          sx={MENU_STYLES}
+          icon={<DashboardIcon />}
+          label="Khangdev"
+          clickable
+        />
+        <Chip
+          sx={MENU_STYLES}
+          icon={<VpnLock />}
+          label="Public/Private Workspace"
+          clickable
+        />
+        <Chip
+          sx={MENU_STYLES}
+          icon={<AddToDrive />}
+          label="add-to-drive"
+          clickable
+        />
+        <Chip sx={MENU_STYLES} icon={<Bolt />} label="automation" clickable />
+        <Chip sx={MENU_STYLES} icon={<FilterList />} label="filter" clickable />
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Button
+          variant="outlined"
+          startIcon={<PersonAdd />}
+          sx={{
+            color: 'white',
+            borderColor: 'white',
+            '&:hover': {
+              borderColor: 'white'
+            }
+          }}
+        >
+          Invite
+        </Button>
+        <AvatarGroup
+          max={7}
+          sx={{
+            gap: '10px',
+            '& .MuiSvgIcon-root': {
+              width: 34,
+              height: 34,
+              fontSize: 16,
+              border: 'none'
+            },
+            '&:hover': {
+              bgcolor: 'primary.50'
+            }
+          }}
+        >
+          <Tooltip title="Khang Nguyen">
+            <Avatar alt="Khangdev" src="/static/images/avatar/1.jpg" />
+          </Tooltip>
+          <Tooltip title="Khang Nguyen">
+            <Avatar alt="Khangdev" src="/static/images/avatar/1.jpg" />
+          </Tooltip>
+          <Tooltip title="Khang Nguyen">
+            <Avatar alt="Khangdev" src="/static/images/avatar/1.jpg" />
+          </Tooltip>
+          <Tooltip title="Khang Nguyen">
+            <Avatar alt="Khangdev" src="/static/images/avatar/1.jpg" />
+          </Tooltip>
+          <Tooltip title="Khang Nguyen">
+            <Avatar alt="Khangdev" src="/static/images/avatar/1.jpg" />
+          </Tooltip>
+          <Tooltip title="Khang Nguyen">
+            <Avatar alt="Khangdev" src="/static/images/avatar/1.jpg" />
+          </Tooltip>
+          <Tooltip title="Khang Nguyen">
+            <Avatar alt="Khangdev" src="/static/images/avatar/1.jpg" />
+          </Tooltip>
+          <Tooltip title="Khang Nguyen">
+            <Avatar alt="Khangdev" src="/static/images/avatar/1.jpg" />
+          </Tooltip>
+        </AvatarGroup>
+      </Box>
     </Box>
   )
 }
