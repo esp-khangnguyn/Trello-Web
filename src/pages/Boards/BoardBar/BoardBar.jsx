@@ -1,13 +1,13 @@
-import { Box, Button, Tooltip } from '@mui/material'
-import Chip from '@mui/material/Chip'
 import DashboardIcon from '@mui/icons-material/Dashboard'
+import { Box, Button, Tooltip } from '@mui/material'
 import Avatar from '@mui/material/Avatar'
 import AvatarGroup from '@mui/material/AvatarGroup'
+import Chip from '@mui/material/Chip'
+import { capitalizeFirstLetter } from '~/utils/formatters'
 
 import {
   AddToDrive,
   Bolt,
-  Filter,
   FilterList,
   PersonAdd,
   VpnLock
@@ -27,7 +27,7 @@ const MENU_STYLES = {
   }
 }
 
-function BoardBar() {
+function BoardBar({ board }) {
   return (
     <Box
       px={2}
@@ -55,13 +55,13 @@ function BoardBar() {
         <Chip
           sx={MENU_STYLES}
           icon={<DashboardIcon />}
-          label="Khangdev"
+          label={board?.title}
           clickable
         />
         <Chip
           sx={MENU_STYLES}
           icon={<VpnLock />}
-          label="Public/Private Workspace"
+          label={capitalizeFirstLetter(board?.type)}
           clickable
         />
         <Chip
@@ -95,7 +95,11 @@ function BoardBar() {
               width: 34,
               height: 34,
               fontSize: 16,
-              border: 'none'
+              border: 'none',
+              cursor: 'pointer',
+              '&:first-of-type': {
+                bgcolor: '#a4b0be'
+              }
             },
             '&:hover': {
               bgcolor: 'primary.50'

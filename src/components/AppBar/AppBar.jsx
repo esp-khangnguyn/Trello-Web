@@ -4,7 +4,7 @@ import { Box, Button, TextField, Typography } from '@mui/material'
 import Badge from '@mui/material/Badge'
 import SvgIcon from '@mui/material/SvgIcon'
 import { ReactComponent as trelloLogo } from '~/assets/trello.svg'
-import ModeSelect from '~/components/ModeSelect'
+import ModeSelect from '~/components/ModeSelect/ModeSelect'
 import Recent from './Menus/Recent'
 import Starred from './Menus/Starred'
 import Templates from './Menus/Templates'
@@ -64,7 +64,6 @@ function AppBar() {
           <Templates />
           <Button
             variant="outlined"
-            startIcon
             sx={{
               color: 'white',
               border: 'none',
