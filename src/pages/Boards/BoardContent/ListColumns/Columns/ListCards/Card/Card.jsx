@@ -28,9 +28,9 @@ function Card({ card }) {
   }
   const shouldShowCard = () => {
     return (
-      !!card?.memberIds.length ||
-      !!card?.comments.length ||
-      !!card?.attachments.length
+      !!card?.memberIds?.length ||
+      !!card?.comments?.length ||
+      !!card?.attachments?.length
     )
   }
 
@@ -59,7 +59,9 @@ function Card({ card }) {
       sx={{
         cursor: 'pointer',
         boxShadow: '0 1px 1px rgba(0,0,0,0.2)',
-        overflow: 'unset'
+        overflow: 'unset',
+        display: card?.FE_PlaceHolder ? 'none' : 'block',
+        padding: card?.FE_PlaceHolder ? '0px' : 'auto'
       }}
     >
       {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />}
