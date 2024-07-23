@@ -1,5 +1,6 @@
 import {
   AddCard,
+  Close,
   Cloud,
   ContentCopy,
   ContentCut,
@@ -16,6 +17,7 @@ import {
   ListItemIcon,
   ListItemText,
   Menu,
+  TextField,
   Typography
 } from '@mui/material'
 import MenuItem from '@mui/material/MenuItem'
@@ -27,8 +29,11 @@ import { mapOrder } from '~/utils/sorts'
 import ListCards from './ListCards/ListCards'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import theme from '~/theme'
+import { toast } from 'react-toastify'
+import { useConfirm } from 'material-ui-confirm'
 
-function Column({ column }) {
+function Column({ column, createNewCard, deleteColumnDetails }) {
   const {
     attributes,
     listeners,
@@ -46,7 +51,33 @@ function Column({ column }) {
     opacity: isDragging ? 0.5 : undefined
   }
 
-  const orderCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  const [openNewCardForm, setOpenNewCardForm] = useState(false)
+  const toggleNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
+
+  const [newCardTitle, setNewCardTitle] = useState('')
+
+  const addNewCard = async () => {
+    if (!newCardTitle) {
+      toast.error('Please enter card title', {
+        position: 'bottom-right',
+        theme: 'colored'
+      })
+      return
+    }
+
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id
+    }
+
+    await createNewCard(newCardData)
+
+    toggleNewCardForm()
+    setOpenNewCardForm('')
+  }
+
+  const orderCards = column.cards
+
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -54,6 +85,22 @@ function Column({ column }) {
   }
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const confirmDeleteColumn = useConfirm()
+
+  const handleDeleteColumn = () => {
+    confirmDeleteColumn({
+      title: 'Detele Column ?',
+      confirmationText: 'CONFIRM',
+      cancellationText: 'CANCLE',
+      description:
+        'This action will permanently delete your Column and its Cards! Are you sure ?'
+    })
+      .then(() => {
+        deleteColumnDetails(column._id)
+      })
+      .catch(() => {})
   }
   return (
     <div ref={setNodeRef} style={dndKitColumnStyle} {...attributes}>
@@ -104,6 +151,7 @@ function Column({ column }) {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
+              onClick={handleClose}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'left'
@@ -115,11 +163,21 @@ function Column({ column }) {
             >
               <Paper sx={{ width: 220, maxWidth: '100%', boxShadow: 'none' }}>
                 <MenuList sx={{ p: 0 }}>
-                  <MenuItem>
+                  <MenuItem
+                    onClick={toggleNewCardForm}
+                    sx={{
+                      '&:hover': {
+                        color: 'success.light',
+                        '& .add-card-icon': {
+                          color: 'success.light'
+                        }
+                      }
+                    }}
+                  >
                     <ListItemIcon>
-                      <AddCard fontSize="small" />
+                      <AddCard className="add-card-icon" fontSize="small" />
                     </ListItemIcon>
-                    <ListItemText>Add new cart</ListItemText>
+                    <ListItemText>Add new card</ListItemText>
                   </MenuItem>
                   <MenuItem>
                     <ListItemIcon>
@@ -140,11 +198,24 @@ function Column({ column }) {
                     <ListItemText>Content paste</ListItemText>
                   </MenuItem>
                   <Divider />
-                  <MenuItem>
+                  <MenuItem
+                    onClick={handleDeleteColumn}
+                    sx={{
+                      '&:hover': {
+                        color: 'warning.dark',
+                        '& .delete-forever-icon': {
+                          color: 'warning.dark'
+                        }
+                      }
+                    }}
+                  >
                     <ListItemIcon>
-                      <DeleteForever fontSize="small" />
+                      <DeleteForever
+                        className="delete-forever-icon"
+                        fontSize="small"
+                      />
                     </ListItemIcon>
-                    <ListItemText>Remove this columns</ListItemText>
+                    <ListItemText>Delete this columns</ListItemText>
                   </MenuItem>
                   <MenuItem>
                     <ListItemIcon>
@@ -171,10 +242,97 @@ function Column({ column }) {
             justifyContent: 'space-between'
           }}
         >
-          <Button startIcon={<AddCard />}>Add new card</Button>
-          <Tooltip>
-            <DragHandle sx={{ cursor: 'pointer' }} />
-          </Tooltip>
+          {!openNewCardForm ? (
+            <Box
+              sx={{
+                display: 'flex',
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <Button startIcon={<AddCard />} onClick={toggleNewCardForm}>
+                Add new card
+              </Button>
+              <Tooltip>
+                <DragHandle sx={{ cursor: 'pointer' }} />
+              </Tooltip>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1
+              }}
+            >
+              <Box>
+                <TextField
+                  id="outlined-search"
+                  label="Enter card..."
+                  autoFocus
+                  data-no-dnd={true}
+                  type="text"
+                  size="small"
+                  value={newCardTitle}
+                  onChange={(e) => setNewCardTitle(e.target.value)}
+                  sx={{
+                    '& label': { color: 'text.primary' },
+                    '& input': {
+                      color: (theme) => theme.palette.primary.main,
+                      bgcolor: (theme) =>
+                        theme.palette.mode === 'dark' ? '#33463' : 'white'
+                    },
+                    '& label.Mui-focused': {
+                      color: (theme) => theme.palette.primary.main
+                    },
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: (theme) => theme.palette.primary.main
+                      },
+                      '&:hover fieldset': {
+                        borderColor: (theme) => theme.palette.primary.main
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: (theme) => theme.palette.primary.main
+                      }
+                    },
+                    '& .MuiOutlinedInput-input': {
+                      borderRadius: 1
+                    }
+                  }}
+                />
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Button
+                  onClick={addNewCard}
+                  variant="contained"
+                  size="small"
+                  color="success"
+                  data-no-dnd={true}
+                  sx={{
+                    boxShadow: 'none',
+                    border: '0.5px solid',
+                    borderColor: (theme) => theme.palette.success.main,
+                    '&:hover': {
+                      bgcolor: (theme) => theme.palette.success.main
+                    }
+                  }}
+                >
+                  Add
+                </Button>
+                <Close
+                  fontSize="small"
+                  onClick={toggleNewCardForm}
+                  sx={{
+                    color: (theme) => theme.palette.warning.light,
+                    cursor: 'pointer'
+                  }}
+                />
+              </Box>
+            </Box>
+          )}
         </Box>
       </Box>
     </div>

@@ -28,6 +28,7 @@ const MENU_STYLES = {
 }
 
 function BoardBar({ board }) {
+  console.log(board)
   return (
     <Box
       px={2}
@@ -52,12 +53,14 @@ function BoardBar({ board }) {
           gap: 2
         }}
       >
-        <Chip
-          sx={MENU_STYLES}
-          icon={<DashboardIcon />}
-          label={board?.title}
-          clickable
-        />
+        <Tooltip title={board?.description}>
+          <Chip
+            sx={MENU_STYLES}
+            icon={<DashboardIcon />}
+            label={board?.title}
+            clickable
+          />
+        </Tooltip>
         <Chip
           sx={MENU_STYLES}
           icon={<VpnLock />}
